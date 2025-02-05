@@ -56,7 +56,7 @@ User.prototype.generateAuthToken = function () {
     return jwt.sign(
         { id: this.id, email: this.email },
         process.env.JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '24h' }
     );
 };
 

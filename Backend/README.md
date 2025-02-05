@@ -1,81 +1,132 @@
+Here is the updated version of your `README.md` with unnecessary information removed, keeping it clean and to the point:
+
+```markdown
 # Backend API Documentation
 
 ## Endpoints
 
-### POST /users/register
+### POST /users/login
 
 #### Description
-This endpoint is used to register a new user.
+Authenticates an existing user and generates a JWT token for further authentication.
 
 #### Request Body
-The request body must be a JSON object containing the following fields:
+- `email` (string, required): The email address of the user. Must be a valid email format.
+- `password` (string, required): The password for the user. Must be at least 6 characters long.
 
-- `firstname` (string): The first name of the user. Must be at least 3 characters long.
-- `lastname` (string, optional): The last name of the user. Must be at least 3 characters long if provided.
-- `email` (string): The email address of the user. Must be a valid email address.
-- `password` (string): The password for the user. Must be at least 6 characters long.
-
-## Example Response:
+#### Example Request
 ```json
 {
-    "firstname": "John",
-    "lastname": "Doe",
-    "email": "john.doe@example.com",
-    "password": "password123"
+    "email": "user@example.com",
+    "password": "securepassword"
 }
+```
 
-    Responses
-    201 Created
-    Description: User successfully registered.
-    Body: A JSON object containing the JWT token and user details.
-    Example
+#### Responses
 
+##### Success Response (200 OK)
+If the login credentials are correct, the server returns a JWT token and user details.
+
+```json
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "token": "your_jwt_token_here",
     "user": {
-        "id": 1,
+        "id": "user_id",
         "firstname": "John",
         "lastname": "Doe",
-        "email": "john.doe@example.com",
-        "socketId": null,
-        "createdAt": "2023-10-01T12:34:56.789Z",
-        "updatedAt": "2023-10-01T12:34:56.789Z"
+        "email": "user@example.com"
     }
 }
+```
 
-400 Bad Request
-Description: Invalid input data.
-Body: A JSON object containing the validation errors.
-Example
+##### Error Responses
+
+###### 400 Bad Request (Validation Error)
+Occurs when the request body does not meet validation rules.
+
+```json
 {
     "errors": [
-        {
-            "msg": "Invalid Email",
-            "param": "email",
-            "location": "body"
-        },
-        {
-            "msg": "Firstname must be at least 3 character",
-            "param": "firstname",
-            "location": "body"
-        },
-        {
-            "msg": "Password must be at least 6 character",
-            "param": "password",
-            "location": "body"
-        }
+        { "msg": "Invalid Email", "param": "email", "location": "body" },
+        { "msg": "Password must be at least 6 characters", "param": "password", "location": "body" }
     ]
 }
+```
 
-### Example Request
+###### 401 Unauthorized (Invalid Credentials)
+Occurs when the provided email or password is incorrect.
 
-curl -X POST http://localhost:3000/users/register \
--H "Content-Type: application/json" \
--d '{
+```json
+{
+    "message": "Invalid Credentials"
+}
+```
+
+#### Notes
+- The returned JWT token should be included in the `Authorization` header for accessing protected routes.
+
+---
+
+### GET /users/profile
+
+#### Description
+Retrieves the profile information of the authenticated user.
+
+#### Authentication
+Requires a valid JWT token to be passed in the `Authorization` header or cookies.
+
+#### Success Response (200 OK)
+If the user is authenticated, the server returns the user's profile details.
+
+```json
+{
+    "id": "user_id",
     "firstname": "John",
     "lastname": "Doe",
-    "email": "john.doe@example.com",
-    "password": "password123"
-}'
+    "email": "user@example.com"
+}
+```
 
+##### Error Response (401 Unauthorized)
+Occurs if the user is not authenticated or the token is invalid/expired.
 
+```json
+{
+    "message": "Unauthorized Access"
+}
+```
+
+---
+
+### GET /users/logout
+
+#### Description
+Logs the user out by clearing their authentication token from the cookies and adding the token to a blacklist.
+
+#### Authentication
+Requires a valid JWT token to be passed in the `Authorization` header or cookies.
+
+#### Success Response (200 OK)
+If the user is successfully logged out, the server will clear the token and return a success message.
+
+```json
+{
+    "message": "Logout successful"
+}
+```
+
+##### Error Response (401 Unauthorized)
+Occurs if the user is not authenticated or the token is invalid.
+
+```json
+{
+    "message": "Unauthorized Access"
+}
+```
+
+---
+
+### Summary of Important Details:
+- **Authentication for `/users/profile`**: Requires a valid JWT token.
+- **Authentication for `/users/logout`**: Requires a valid JWT token to clear it from the user's session and blacklist it.
+```
