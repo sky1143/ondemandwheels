@@ -4,24 +4,25 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = sequelize.define('User', {
-
     firstname: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            len: [3, 255]
+            len: [3, 255 ,'Firstname must be at least 3 characters long']
         }
     },
     lastname: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            len: [3, 255]
+            len: [3, 255, "Lastname must be at least 3 characters long"]
         }
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        required: true,
+        lowercase: true,
         unique: true,
         validate: {
             isEmail: true,

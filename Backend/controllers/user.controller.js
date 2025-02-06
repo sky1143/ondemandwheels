@@ -14,6 +14,12 @@
         console.log(req.body);
         const { firstname, lastname, email, password } = req.body;
 
+        const isUserAlreadyExist = await userModel.findOne({ email });
+
+        if (isUserAlreadyExist) {
+            res.status(400).json({ message: 'User is Already Exists'})
+        }
+
     try {
         const user = await userService.createUser({
             firstname,

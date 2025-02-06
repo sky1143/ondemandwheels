@@ -126,7 +126,100 @@ Occurs if the user is not authenticated or the token is invalid.
 
 ---
 
-### Summary of Important Details:
+
+### Endpoints
+
+---
+
+## Captain Routes
+
+### **POST /captains/register**
+
+#### **Description**
+Registers a new captain in the system.
+
+#### **Request Body**
+| Field             | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `firstname`      | String  | Yes      | First name of the captain. Must be at least 3 characters. |
+| `lastname`       | String  | No       | Last name of the captain. |
+| `email`          | String  | Yes      | Email address of the captain. Must be a valid email format. |
+| `password`       | String  | Yes      | Password for the captain. Must be at least 6 characters. |
+| `vehicleColor`   | String  | Yes      | Color of the captain's vehicle. Must be at least 3 characters. |
+| `vehiclePlate`   | String  | Yes      | License plate of the captain's vehicle. Must be at least 3 characters. |
+| `vehicleCapacity`| Integer | Yes      | Seating capacity of the vehicle. Must be at least 1. |
+| `vehicleType`    | Enum    | Yes      | Type of vehicle. Allowed values: `car`, `motorcycle`, `auto`. |
+
+#### **Example Request**
+```json
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "johndoe@example.com",
+    "password": "securepassword",
+    "vehicleColor": "Red",
+    "vehiclePlate": "MP 04 AB 1450",
+    "vehicleCapacity": 4,
+    "vehicleType": "car"
+}
+```
+
+#### **Responses**
+
+##### **Success Response (201 Created)**
+If the registration is successful, the server returns a JWT token and captain details.
+```json
+{
+    "token": "your_jwt_token_here",
+    "captain": {
+        "id": 1,
+        "firstname": "John",
+        "lastname": "Doe",
+        "email": "johndoe@example.com",
+        "vehicleColor": "Red",
+        "vehiclePlate": "MP 04 AB 1450",
+        "vehicleCapacity": 4,
+        "vehicleType": "car",
+        "createdAt": "2025-02-06T12:00:00.000Z",
+        "updatedAt": "2025-02-06T12:00:00.000Z"
+    }
+}
+```
+
+##### **Error Responses**
+
+###### **400 Bad Request (Validation Error)**
+Occurs when the request body does not meet validation rules.
+```json
+{
+    "errors": [
+        { "msg": "Invalid Email", "param": "email", "location": "body" },
+        { "msg": "Color must be at least 3 characters", "param": "vehicleColor", "location": "body" }
+    ]
+}
+```
+
+###### **400 Bad Request (Captain Already Exists)**
+Occurs if the captain is already registered with the same email.
+```json
+{
+    "message": "Captain is Already exists"
+}
+```
+
+###### **500 Internal Server Error**
+Occurs if there is an unexpected error on the server.
+```json
+{
+    "message": "Internal Server Error"
+}
+```
+
+---
+
+## **Summary of Important Details:**
 - **Authentication for `/users/profile`**: Requires a valid JWT token.
 - **Authentication for `/users/logout`**: Requires a valid JWT token to clear it from the user's session and blacklist it.
-```
+- **Validation for `/captains/register`**: Requires all required fields to be present and valid.
+- **Error Handling**: Includes validation errors, duplicate entries, and unexpected failures.
+- **JWT Token**: A token is returned upon successful registration for authentication.
