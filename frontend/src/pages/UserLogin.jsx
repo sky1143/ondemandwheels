@@ -21,9 +21,9 @@ const UserLogin = () => {
     console.log(email,password);
   }
   return (
-    <div className='p-7 h-screen flex flex-col justify-between' >
+    <div className='p-3 h-screen flex flex-col justify-between' >
       <div>
-      <img className='w-16 mb-10' src={logo} />
+      <img className='w-16 mb-8 h-20' src={logo} />
       <form onSubmit={(e) => {
         submitHandler(e)
       }} >

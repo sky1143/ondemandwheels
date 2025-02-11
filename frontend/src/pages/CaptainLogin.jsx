@@ -20,9 +20,9 @@ const CaptainLogin = () => {
       console.log(email,password);
     }
   return (
-    <div className='p-7  h-screen flex flex-col justify-between' >
+    <div className='p-3  h-screen flex flex-col justify-between' >
     <div>
-    <img className='w-16 mb-10' src={logo} />
+    <img className='w-20 mb-2' src={logo} />
     <form onSubmit={(e) => {
       submitHandler(e)
     }} >
@@ -57,7 +57,7 @@ const CaptainLogin = () => {
     </form>
     </div>
     <div>
-      <Link to = '/captain-login'
+      <Link to = '/login'
         className='bg-[#d5622d] flex items-center justify-center text-white mb-5 font-semibold rounded px-4 py-2  w-full text-lg placeholder:text-base'
       >Sign in as User</Link>
     </div>
