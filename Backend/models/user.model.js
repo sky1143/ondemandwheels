@@ -8,14 +8,14 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            len: [3, 255 ,'Firstname must be at least 3 characters long']
+            len: [3, 255]
         }
     },
     lastname: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            len: [3, 255, "Lastname must be at least 3 characters long"]
+            len: [3, 255]
         }
     },
     email: {

@@ -1,4 +1,4 @@
-const {DataTypes} = require('sequelize');
+const {DataTypes, Op} = require('sequelize');
 const sequelize = require('../db/db');
 
 
@@ -28,7 +28,7 @@ async function cleanExpiredTokens() {
     await blacklistToken.destroy({
         where : {
             createdAt : {
-                [sequelize.Op.lt] : oneDayAgo   
+                [Op.lt] : oneDayAgo   
             }
         }
     });

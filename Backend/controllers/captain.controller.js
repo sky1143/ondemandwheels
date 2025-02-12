@@ -23,7 +23,6 @@ module.exports.registerCaptain = async (req, res, next) => {
 
 
 
-
     // Create Captain using Service
     const captain = await captainService.createCaptain({
         firstname,

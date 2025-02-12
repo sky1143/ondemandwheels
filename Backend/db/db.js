@@ -27,3 +27,4 @@ sequelize.authenticate()
     .catch(err => console.error('Postgres connection error:', err));
 
 module.exports = sequelize;
+
