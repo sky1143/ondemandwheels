@@ -22,17 +22,17 @@ const Home = () => {
     if (panelOpen) {
       gsap.to(panelRef.current, {
         height: '70%',
-        padding:24
+        padding: 24
         // opacity:1
       })
 
       gsap.to(panelCloseRef.current, {
-        opacity:1
+        opacity: 1
       })
     } else {
       gsap.to(panelRef.current, {
         height: '0%',
-        padding:0
+        padding: 0
         // opacity:0
       })
 
@@ -60,7 +60,6 @@ const Home = () => {
             setPanelOpen(false)
           }} className='absolute opacity-0 top-6 right-6 text-2xl '>
             <i className="ri-arrow-down-wide-line"></i>
-
           </h5>
           <h4 className='text-2xl font-semibold'>Find a trip </h4>
           <form onSubmit={(e) => {
@@ -95,10 +94,10 @@ const Home = () => {
           </form>
         </div>
         <div ref={panelRef} className=' bg-white   h-0  '>
-          <LocationSeachPanel/>
+          <LocationSeachPanel />
 
         </div>
-
+        
       </div>
 
     </div>
