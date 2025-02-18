@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react'
-import logo from '../assets/logo.png'
-import map from '../assets/map.jpg'
+import logo from '../assets/logo.png';
+import map from '../assets/map.jpg';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import 'remixicon/fonts/remixicon.css'
+import 'remixicon/fonts/remixicon.css';
 import LocationSeachPanel from '../components/LocationSeachPanel';
+import VehiclePanel from '../components/VehiclePanel';
 const Home = () => {
 
   const [pickup, setPickup] = useState('')
@@ -48,8 +49,16 @@ const Home = () => {
   }, [panelOpen])
 
   useGSAP(function () {
-
-  })
+    if (vehiclePanel) {
+      gsap.to(vehiclePanelRef.current, {
+        transform: 'translateY(0)'
+      })
+    } else {
+      gsap.to(vehiclePanelRef.current, {
+        transform: 'translateY(100%)'
+      })
+    }
+  }, [vehiclePanel])
 
   return (
 
@@ -102,42 +111,13 @@ const Home = () => {
           </form>
         </div>
         <div ref={panelRef} className=' bg-white   h-0  '>
-          <LocationSeachPanel vehiclePanel={vehiclePanel} setVehiclePanel={setVehiclePanel} />
+          <LocationSeachPanel setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
 
         </div>
 
       </div>
-      <div className='fixed  w-full z-10 bg-white bottom-0 translate-y-full px-3 py-8'>
-        <h3 className='text-xl font-semibold mb-5'>Choose Vehicle</h3>
-        <div className='flex w-full p-2 border active:border-black rounded-xl mb-2 items-center justify-between'>
-          <img className='h-12' src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1555367310/assets/30/51e602-10bb-4e65-b122-e394d80a9c47/original/Final_UberX.png" alt="" />
-          <div className="w-1/2">
-            <h4 className='font-medium text-base'>OdwxGo <span><i className="ri-user-fill">4</i></span></h4>
-            <h5 className='font-medium text-sm' >2 mins away </h5>
-            <p className='font-normal text-xs text-gray-600'>Affordable, compact rides</p>
-          </div>
-          <h2 className='text-lg font-semibold'>₹150.20</h2>
-        </div>
-
-        <div className='flex w-full p-2 border active:border-black rounded-xl mb-2 items-center justify-between'>
-          <img className='h-12' src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1649231091/assets/2c/7fa194-c954-49b2-9c6d-a3b8601370f5/original/Uber_Moto_Orange_312x208_pixels_Mobile.png" alt="" />
-          <div className="w-1/2">
-            <h4 className='font-medium text-base'>Motocyle <span><i className="ri-user-fill">1</i></span></h4>
-            <h5 className='font-medium text-sm' >3 mins away </h5>
-            <p className='font-normal text-xs text-gray-600'>Affordable, bike rides</p>
-          </div>
-          <h2 className='text-lg font-semibold'>₹65.20</h2>
-        </div>
-
-        <div className='flex w-full p-2 border active:border-black rounded-xl mb-2 items-center justify-between'>
-          <img className='h-12' src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,h_368,w_552/v1648431773/assets/1d/db8c56-0204-4ce4-81ce-56a11a07fe98/original/Uber_Auto_558x372_pixels_Desktop.png" alt="" />
-          <div className=" w-1/2">
-            <h4 className='font-medium text-base'>Odwx auto <span><i className="ri-user-fill">3</i></span></h4>
-            <h5 className='font-medium text-sm' >3 mins away </h5>
-            <p className='font-normal text-xs text-gray-600'>Affordable, auto rides</p>
-          </div>
-          <h2 className='text-lg font-semibold'>₹120.40</h2>
-        </div>
+      <div ref={vehiclePanelRef} className='fixed  w-full z-10 bg-white bottom-0 translate-y-full px-3 py-10 pt-14'>
+        <VehiclePanel setVehiclePanel={setVehiclePanel} />
       </div>
 
     </div>
@@ -146,3 +126,4 @@ const Home = () => {
 }
 
 export default Home
+  
