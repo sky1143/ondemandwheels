@@ -6,15 +6,23 @@ import gsap from 'gsap';
 import 'remixicon/fonts/remixicon.css';
 import LocationSeachPanel from '../components/LocationSeachPanel';
 import VehiclePanel from '../components/VehiclePanel';
+import ConfirmRide from '../components/ConfirmRide';
+import LookingForDriver from '../components/LookingForDriver';
+
 const Home = () => {
 
   const [pickup, setPickup] = useState('')
   const [destination, setDestination] = useState('')
   const [panelOpen, setPanelOpen] = useState(false)
   const vehiclePanelRef = useRef(null)
+  const confirmRidePanelRef = useRef(null)
+  const vehicleFoundRef = useRef(null)
   const panelRef = useRef(null)
   const panelCloseRef = useRef(null)
   const [vehiclePanel, setVehiclePanel] = useState(false);
+  const [confirmRidePanel, setConfirmRidePanel] = useState(false)
+  const [vehicleFound, setVehicleFound] = useState(false)
+
 
 
 
@@ -59,6 +67,32 @@ const Home = () => {
       })
     }
   }, [vehiclePanel])
+
+  useGSAP(function () {
+    if (confirmRidePanel) {
+      gsap.to(confirmRidePanelRef.current, {
+        transform: 'translateY(0)'
+      })
+    } else {
+      gsap.to(confirmRidePanelRef.current, {
+        transform: 'translateY(100%)'
+      })
+    }
+  }, [confirmRidePanel])
+
+  useGSAP(function () {
+    if (vehicleFound) {
+      gsap.to(vehicleFoundRef.current, {
+        transform: 'translateY(0)'
+      })
+    } else {
+      gsap.to(vehicleFoundRef.current, {
+        transform: 'translateY(100%)'
+      })
+    }
+  }, [vehicleFound])
+
+
 
   return (
 
@@ -117,9 +151,23 @@ const Home = () => {
 
       </div>
       <div ref={vehiclePanelRef} className='fixed  w-full z-10 bg-white bottom-0 translate-y-full px-3 py-10 pt-14'>
-        <VehiclePanel setVehiclePanel={setVehiclePanel} />
+        <VehiclePanel  setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel}  />
       </div>
 
+      <div ref={confirmRidePanelRef} className='fixed  w-full z-10 bg-white bottom-0 translate-y-full px-3 py-6 pt-12'>
+        <ConfirmRide setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound}  />
+      </div>
+
+      <div ref={vehicleFoundRef} className='fixed  w-full z-10 bg-white bottom-0 translate-y-full px-3 py-6 pt-12'>
+        <LookingForDriver/>
+      </div>
+
+
+    
+
+
+
+     
     </div>
 
   )
