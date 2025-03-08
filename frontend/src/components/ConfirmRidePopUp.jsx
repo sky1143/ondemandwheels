@@ -1,12 +1,13 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-const RidePopUp = (props) => {
+const ConfirmRidePopUp = (props) => {
   return (
-    <div>
+    <div className='h-screen'>
       <h5 className='p-1 text-center absolute w-[93%] top-0 ' onClick={() => {
         props.setRidePopupPanel(false)
       }}><i className=" text-3xl text-gray-200 ri-arrow-down-wide-fill"></i></h5>
-      <h3 className='text-xl font-semibold mb-5'>New Ride Available!</h3>
+      <h3 className='text-xl font-semibold mb-5'>Confirm ride to start</h3>
       <div className='flex items-center justify-between  p-3 rounded-lg bg-yellow-300 '>
         <div className='flex items-center gap-3 '>
           <img className='h-10 w-10 object-cover rounded-full' src="https://live.staticflickr.com/7160/6410037157_8a32776d93_b.jpg" alt="" />
@@ -36,20 +37,16 @@ const RidePopUp = (props) => {
             <div className=''>
               <h3 className='text-lg font-medium'>₹193.20</h3>
               <p className='text-sm -mt  text-gray-600' >Cash Cash</p>
-            </div>
-          </div>
-        </div>
-        <div className='flex  items-center justify-between gap-3'>
+            </div></div>
+
+          <Link to='/captain-riding' className='w-full mt-5 flex bg-green-400 justify-center  text-white font-semibold p-2 rounded-lg' >Confirm</Link>
+
           <button onClick={() => {
+           
             props.setRidePopupPanel(false)
+            props.setConfirmRidePopupPanel(false)
 
-          }} className=' mt-5 bg-gray-200 text-gray-700 font-semibold p-3 px-10 rounded-lg' >Ignore</button>
-          
-          <button onClick={() => {
-            props.setConfirmRidePopupPanel(true)
-
-          }} className=' mt-5 bg-green-400 text-white font-semibold p-3 px-10 rounded-lg' >Accept</button>
-
+          }} className='w-full mt-2 bg-red-500 text-white font-semibold p-2 rounded-lg' >Cancel</button>
 
         </div>
       </div>
@@ -57,4 +54,4 @@ const RidePopUp = (props) => {
   )
 }
 
-export default RidePopUp
+export default ConfirmRidePopUp

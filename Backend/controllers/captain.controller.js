@@ -95,6 +95,6 @@ module.exports.logoutCaptain = async (req, res, next) => {
 
     await blacklistTokenModel.create({ token })
 
-    res.status(200).json( { message:' Captain logout successfull'})
+    res.status(200).json({ message: ' Captain logout successfull' })
 
 }
