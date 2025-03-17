@@ -7,7 +7,7 @@ module.exports.getAddressCordinate = async (address) => {
     }
 
     
-    const baseURL = "https://nominatim.openstreetmap.org/search";
+    const baseURL = process.env.BASE_URL_ADDRESS_COORDINATE;
     const url = new URL(baseURL);
     url.searchParams.append("q", address);
     url.searchParams.append("format", "json");
@@ -38,7 +38,7 @@ module.exports.getAddressCordinate = async (address) => {
 
 
 const getCoordinates = async (place) => {
-    const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}&limit=1`;
+    const geoUrl = `${process.env.GEO_URL}?format=json&q=${encodeURIComponent(place)}&limit=1`;
 
     try {
         const response = await axios.get(geoUrl);
@@ -70,7 +70,7 @@ module.exports.getDistanceTime = async (origin, destination) => {
         console.log(`Destination coordinates: ${destinationCoords}`);
 
         
-        const baseURL = `https://api.openrouteservice.org/v2/directions/driving-car`;
+        const baseURL = process.env.BASE_URL_DISTANCETIME;
         const url = `${baseURL}?api_key=${apikey}&start=${originCoords}&end=${destinationCoords}`;
 
         console.log(`Requesting OpenRouteService for distance and time between ${origin} and ${destination}`);
@@ -117,7 +117,7 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
     }
 
     
-    const baseURL = "https://nominatim.openstreetmap.org/search";
+    const baseURL = process.env.BASE_URL_AUTOCOMPLETE_SUGESSTION;
     const url = new URL(baseURL);
     url.searchParams.append("q", input);
     url.searchParams.append("format", "json");
