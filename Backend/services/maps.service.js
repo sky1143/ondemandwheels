@@ -60,6 +60,7 @@ module.exports.getDistanceTime = async (origin, destination) => {
     }
 
     const apikey = process.env.OPENROUTE_API_KEY;
+    
 
     try {
        
