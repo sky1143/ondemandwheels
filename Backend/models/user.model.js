@@ -21,9 +21,8 @@ const User = sequelize.define('User', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        required: true,
-        lowercase: true,
         unique: true,
+        lowercase: true,
         validate: {
             isEmail: true,
             len: [5, 255]
@@ -32,7 +31,6 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING,
         allowNull: false,
-        select: false,
     },
     socketId: {
         type: DataTypes.STRING,
