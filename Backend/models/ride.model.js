@@ -1,20 +1,22 @@
 const sequelize = require('../db/db');
 const { DataTypes } = require('sequelize');
+const User = require('./user.model');
+const Captain = require('./captain.model');
 
 const Ride = sequelize.define('Ride', {
     userId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Users', // 👈 Table name in PostgreSQL (case-sensitive)
+            model: User, // 👈 Table name in PostgreSQL (case-sensitive)
             key: 'id', // 👈 Column name in Users table
         },
     },
     captainId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: 'Captains',
+            model: Captain,
             key: 'id',
         },
 
@@ -55,9 +57,8 @@ const Ride = sequelize.define('Ride', {
     },
 });
 
-Ride.associate = (models) => {
-    Ride.belongsTo(models.User, { foreignKey: 'userId', as:'user' });
-    Ride.belongsTo(models.Captain, { foreignKey: 'captainId' , as : 'captain' });
-}
+
+    Ride.belongsTo(User, { foreignKey: 'userId', as:'user' });
+    Ride.belongsTo(Captain, { foreignKey: 'captainId' , as : 'captain' });
 
 module.exports = Ride;

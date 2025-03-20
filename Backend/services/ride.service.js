@@ -14,6 +14,7 @@ async function getFare(pickup, destination) {
         bike: 20
     };
 
+
     const perKmRate = {
         auto: 10,
         car: 15,
@@ -25,6 +26,7 @@ async function getFare(pickup, destination) {
         car: 3,
         motorcycle: 1.5
     };
+
     const fare = {
         auto: baseFare.auto + (distanceTime.distance * perKmRate.auto) + (distanceTime.time * perMinuteRate.auto),
         car: baseFare.car + (distanceTime.distance * perKmRate.car) + (distanceTime.time * perMinuteRate.car),
@@ -37,9 +39,9 @@ async function getFare(pickup, destination) {
 
 
 module.exports.createRide = async ({
-    user, pickup, destination, vehicleType
+    userId, pickup, destination, vehicleType
 }) => {
-    if (!user || !pickup || !destination || !vehicleType) {
+    if ( !userId || !pickup || !destination || !vehicleType) {
         throw new Error(' All fields are required ');
 
     }
@@ -49,13 +51,24 @@ module.exports.createRide = async ({
     }
 
     const fare = await getFare(pickup, destination);
-    const ride = rideModel.create({
-        user,
-        pickup,
-        destination,
-        fare: fare[vehicleType]
-    })
-    return ride;
+    console(fare);
+    try {
+      
+        const ride = await rideModel.create({
+            userId, 
+            captainId, 
+            pickup,
+            destination,
+            fare: fare[vehicleType],
+            status: 'pending' // Default status
+        });
+        
+        return ride;
+
+    } catch (error) {
+        throw new Error(`Error creating ride: ${error.message}`);
+    }
+   
 }
 
 

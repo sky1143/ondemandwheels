@@ -65,7 +65,30 @@ Occurs when the provided email or password is incorrect.
 #### Notes
 - The returned JWT token should be included in the `Authorization` header for accessing protected routes.
 
+
+### POST /users/register
+
+#### Description
+Registers a new user in the system.
+
+#### Request Body
+- `firstname` (string, required): The first name of the user.  
+- `lastname` (string, required): The last name of the user.  
+- `email` (string, required): The email address of the user. Must be a valid email format.  
+- `password` (string, required): The password for the user. Must be at least 6 characters long.  
+
+#### Example Request
+
+```json
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "user@example.com",
+    "password": "securepassword"
+}
+
 ---
+
 
 ### GET /users/profile
 
