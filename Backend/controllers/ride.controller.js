@@ -2,16 +2,27 @@ const rideService = require('../services/ride.service');
 const { validationResult } = require('express-validator');
 
 module.exports.createRide = async (req, res, next) => {
+    console.log("🚀 REQ.USER:", req.user);  // 👈 Debugging log
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { userId, pickup, destination, vehicleType } = req.body;
+    const { pickup, destination, vehicleType } = req.body;
+
+    if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: 'Unauthorized user' });
+    }
 
     try {
-        const ride = await rideService.createRide({ user: req.user._id, pickup, destination, vehicleType });
+        const ride = await rideService.createRide({ 
+            userId: req.user.id, 
+            pickup, 
+            destination,
+            vehicleType });
+
         return res.status(201).json(ride);
+
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }

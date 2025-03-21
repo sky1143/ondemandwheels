@@ -55,10 +55,14 @@ const Ride = sequelize.define('Ride', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    otp: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
 });
 
 
-    Ride.belongsTo(User, { foreignKey: 'userId', as:'user' });
-    Ride.belongsTo(Captain, { foreignKey: 'captainId' , as : 'captain' });
+Ride.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+Ride.belongsTo(Captain, { foreignKey: 'captainId', as: 'captain' });
 
 module.exports = Ride;

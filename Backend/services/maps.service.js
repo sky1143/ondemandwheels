@@ -97,8 +97,8 @@ module.exports.getDistanceTime = async (origin, destination) => {
             if (minutes > 0) formattedDuration += `${minutes}min`;
 
             return {
-                distance: formattedDistance,
-                duration: formattedDuration.trim()
+                distance: parseInt(formattedDistance),
+                duration: parseInt(formattedDuration.trim())
             };
         } else {
             throw new Error("No route found");
