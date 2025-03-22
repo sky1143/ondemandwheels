@@ -43,6 +43,8 @@ async function getFare(pickup, destination) {
 
 }
 
+module.exports.getFare = getFare;
+
 function getOtp(num) {
     function generateOtp(num) {
         const otp = crypto.randomInt(10 ** (num - 1), 10 ** num - 1).toString()
@@ -73,7 +75,7 @@ module.exports.createRide = async ({
             pickup,
             destination,
             fare: fare[vehicleType],
-            otp: getOtp(4),
+            otp: getOtp(6),
             status: 'pending' // Default status
         });
 

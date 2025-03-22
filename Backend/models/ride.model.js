@@ -58,6 +58,11 @@ const Ride = sequelize.define('Ride', {
     otp: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true,
+            len: [4, 6],
+            isNumeric: true,
+        }
     },
 });
 

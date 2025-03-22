@@ -442,6 +442,7 @@ Occurs if the captain is not authenticated or the token is invalid.
 }
 ```
 
+
 ---
 
 ## Summary of Important Details:
