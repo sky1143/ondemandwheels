@@ -53,7 +53,7 @@ module.exports.getAutoCompleteSuggestion = async (req, res, next) => {
         res.status(200).json(suggestion);
 
     } catch (error) {
-         console.error("Error fetching suggestions:", error.message);
+        console.error("Error fetching suggestions:", error.message);
         res.status(500).json({ message: 'Failed to fetch suggestions' });
     }
 }

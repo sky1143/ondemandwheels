@@ -7,16 +7,16 @@ const authMiddleware = require('../middlewares/auth.middleware');
 
 router.post('/create',
     authMiddleware.authUser,
-    body('pickup').isString().withMessage('Pickup address must be string').isLength({ min: 3, max: 24 }).withMessage('Invalid pickup address'),
-    body('destination').isString().withMessage('destination address must be string').isLength({ min: 3, max: 24 }).withMessage('Invalid destination address'),
-    body('vehicleType').isString().isIn(['auto','car','moto']).withMessage('Invalid vehicletype'),
+    body('pickup').trim().escape().isString().withMessage('Pickup address must be string').isLength({ min: 3, max: 100 }).withMessage('Invalid pickup address'),
+    body('destination').trim().escape().isString().withMessage('destination address must be string').isLength({ min: 3, max: 100}).withMessage('Invalid destination address'),
+    body('vehicleType').isString().isIn(['auto', 'car', 'moto']).withMessage('Invalid vehicletype'),
     rideController.createRide
 )
 
-router.get('/get-fare', 
+router.get('/get-fare',
     authMiddleware.authUser,
-    query('pickup').isString().isLength({ min: 3 }).withMessage('Invalid pickup address'),
-    query('destination').isString().isLength({ min:3 }).withMessage('Invalid destination address'),
+    query('pickup').isString().isLength({ min: 3, max: 100 }).withMessage('Invalid pickup address'),
+    query('destination').isString().isLength({ min: 3, max: 100 }).withMessage('Invalid destination address'),
     rideController.getFare
 )
 
