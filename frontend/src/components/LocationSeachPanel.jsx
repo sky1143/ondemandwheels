@@ -68,13 +68,7 @@ export default LocationSeachPanel
 //         //     },
 
 
-
-
-
-
 //         // </div>
-
-
 
 
 //     )

@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { CaptainDataContext } from '../context/CaptainContext'
 
 const CaptainDetails = () => {
+
+    const { captain } = useContext(CaptainDataContext)
+
     return (
         <div>
             <div className='flex items-center justify-between' >
                 <div className='flex items-center justify-start gap-3'>
                     <img className='h-10 w-10 rounded-full object-cover' src="https://live.staticflickr.com/7160/6410037157_8a32776d93_b.jpg" alt="" />
-                    <h4 className='text-lg font-medium '>Raja Babu</h4>
+                    <h4 className='text-lg font-medium capitalize '>{captain.firstname + " " + captain.lastname}</h4>
                 </div>
                 <div>
                     <h4 className='text-xl font-semibold'>₹150</h4>
