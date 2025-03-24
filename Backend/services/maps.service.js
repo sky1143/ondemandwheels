@@ -125,11 +125,10 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
     url.searchParams.append("limit", "5"); 
 
     try {
-        console.log(`Requesting Nominatim API for suggestion with input: ${input}`);
 
         // Send GET request to Nominatim API
         const response = await axios.get(url.toString());
-        console.log("Nominatim API Response:", response.data);
+        
 
         if (response.data.length > 0) {
            
