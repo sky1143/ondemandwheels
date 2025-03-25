@@ -11,6 +11,7 @@ const CaptainContext = ({ children }) => {
         setCaptain(captainData);
     }
 
+
     const value = {
         captain,
         setCaptain,
