@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import map from '../assets/map.jpg'
 import logo from '../assets/logo.png'
@@ -7,7 +7,8 @@ import RidePopUp from '../components/RidePopUp'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import ConfirmRidePopUp from '../components/ConfirmRidePopUp'
-
+import { SocketContext } from '../context/SocketContext'
+import { CaptainDataContext } from '../context/CaptainContext'
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(true);
@@ -15,6 +16,37 @@ const CaptainHome = () => {
 
   const ridePopupPanelRef = useRef(null)
   const ConfirmRidePopupPanelRef = useRef(null)
+
+  const { socket } = useContext(SocketContext);
+const { captain } = useContext(CaptainDataContext);
+
+useEffect(() => {
+  if (!socket) {
+      console.warn("⏳ Waiting for socket initialization...");
+      return;
+  }
+
+  // Emit join event after confirming socket is connected
+  socket.on("connect", () => {
+      console.log(`📡 Emitting join event for captain ID: ${captain?._id || storedCaptainId}`);
+      socket.emit('join', {
+          userId: captain?._id || storedCaptainId, 
+          userType: 'captain'
+      }, (ack) => {
+          if (ack && ack.error) {
+              console.error('Join error:', ack.error);
+          } else {
+              console.log('✅ Join successful');
+          }
+      });
+  });
+
+  return () => {
+      socket.off("connect"); // Clean up the event listener
+  };
+
+}, [socket, captain]);
+
 
   useGSAP(function () {
     if (ridePopupPanel) {
@@ -55,10 +87,10 @@ const CaptainHome = () => {
           alt='map' />
       </div>
       <div className="h-2/5 p-6 ">
-        <CaptainDetails/>
+        <CaptainDetails />
       </div>
       <div ref={ridePopupPanelRef} className='fixed  w-full z-10 bg-white bottom-0  translate-y-full   px-3 py-10 pt-14'>
-        <RidePopUp setRidePopupPanel={setRidePopupPanel}   setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
+        <RidePopUp setRidePopupPanel={setRidePopupPanel} setConfirmRidePopupPanel={setConfirmRidePopupPanel} />
       </div>
       <div ref={ConfirmRidePopupPanelRef} className='fixed  w-full h-screen z-10 bg-white bottom-0  translate-y-full   px-3 py-10 pt-14'>
         <ConfirmRidePopUp setConfirmRidePopupPanel={setConfirmRidePopupPanel} setRidePopupPanel={setRidePopupPanel} />
