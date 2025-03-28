@@ -1,7 +1,6 @@
-const socketIo = require('socket.io')
+const socketIo = require('socket.io');
 const userModel = require('./models/user.model');
 const captainModel = require('./models/captain.model');
-const { where } = require('sequelize');
 
 let io;
 
@@ -13,44 +12,42 @@ function initializeSocket(server) {
         }
     });
 
-
     io.on('connection', (socket) => {
-        console.log(`Client connected: ${socket.id}`);
+        console.log(`✅ Client connected: ${socket.id}`);
 
         socket.on('join', async (data) => {
-            console.log("received data from the frontend", data)
+            console.log("🔄 Received join event from frontend:", data);
 
             if (!data || !data.userId || !data.userType) {
-                console.log("invalid data received in 'join event", data);
+                console.log("⚠️ Invalid data received in 'join' event:", data);
                 return;
             }
 
             const { userId, userType } = data;
 
-            console.log(`User ${userId} joined as ${userType}`);
-            console.log(`Socket ID: ${socket.id}`)
-
-            //  Updating the User's Socket ID in the Database
+            console.log(`✅ User ${userId} joined as ${userType}`);
+            console.log(`💾 Storing Socket ID: ${socket.id}`);
 
             try {
                 let result;
 
                 if (userType === 'user') {
                     const user = await userModel.findByPk(userId);
+                    console.log(`🟢 Updating socket ID for User ${userId}`);
                     if (!user) {
-                        console.log(`User with ID${userId} not found`);
-                        return
+                        console.log(`🚫 User with ID ${userId} not found`);
+                        return;
                     }
-
 
                     result = await userModel.update(
                         { socketId: socket.id },
                         { where: { id: userId } }
                     );
                 } else if (userType === 'captain') {
+                    console.log(`🔵 Updating socket ID for Captain ${userId}`);
                     const captain = await captainModel.findByPk(userId);
                     if (!captain) {
-                        console.log(`Captaing with ID ${userId} not found`);
+                        console.log(`🚫 Captain with ID ${userId} not found`);
                         return;
                     }
 
@@ -59,28 +56,23 @@ function initializeSocket(server) {
                         { where: { id: userId } }
                     );
                 }
-                console.log("update Result", result);
 
                 if (result[0] === 0) {
-                    console.log(` No rows updated for ${userType} with ID ${userId}`)
+                    console.log(`⚠️ No rows updated for ${userType} with ID ${userId}`);
                 } else {
-                    console.log(`Socket Id updated for ${userType} with ID ${userId}`)
+                    console.log(`✅ Socket ID updated for ${userType} with ID ${userId}`);
                 }
 
-                // console.log(`socket ID updated for ${userType} with ID ${userId}`)
-                // console.log(  `Id is  ${userId}:`)
             } catch (error) {
-                console.error(' ❌ Error updating socket ID:', error);
-
-
+                console.error('❌ Error updating socket ID:', error);
             }
-
         });
 
-        // Handling Client Disconnection
+       
 
+        // Handling Client Disconnection
         socket.on('disconnect', async () => {
-            console.log(`Client disconnected: ${socket.id}`);
+            console.log(`❌ Client disconnected: ${socket.id}`);
 
             try {
                 await userModel.update({ socketId: null },
@@ -90,14 +82,15 @@ function initializeSocket(server) {
                     { where: { socketId: socket.id } }
                 );
 
-                console.log('Socket Id cleared for disconnected user')
+                console.log('🗑️ Socket ID cleared for disconnected user/captain');
             } catch (error) {
-                console.error('Error clearing socket ID:', error);
+                console.error('❌ Error clearing socket ID:', error);
             }
         });
     });
-
 }
+
+
 
 function sendMessageToSocketId(socketId, message) {
     if (io) {
@@ -111,38 +104,5 @@ function sendMessageToSocketId(socketId, message) {
 module.exports = { initializeSocket, sendMessageToSocketId };
 
 
-
-// const socketIo = require('socket.io');
-// const userModel = require('./models/user.model');
-// const captainModel = require('./models/captain.model');
-
-// let io;
-// function initializeSocket (server) {
-
-//     io = socketIo(server, {
-//         cors: {
-//             orgin : "*" ,
-//             method : ["GET","PUT"]
-//         }
-//     })
-
-//     io.on('connection' , (socket) =>  {
-//         console.log(`Client is connected ${socket}`)
-
-//         socket.on('join' , async (data) => {
-//             console.log('Receieved data in the frontend',data)
-
-//             if(!data || !data.userType || !data.userId) {
-//                 console.log(`Socket id is not find`)
-//             }
-//         })
-//     }) 
-
-
-
-// }
- 
-
-// exports.module = { initializeSocket}
 
 

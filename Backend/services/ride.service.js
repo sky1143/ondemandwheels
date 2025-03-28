@@ -52,7 +52,7 @@ function getOtp(num) {
     }
     return generateOtp(num)
 }
-console.log(getOtp(4))
+console.log(getOtp(6))
 
 module.exports.createRide = async ({
     userId, pickup, destination, vehicleType, 
