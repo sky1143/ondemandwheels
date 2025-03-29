@@ -20,32 +20,40 @@ const CaptainHome = () => {
   const { socket } = useContext(SocketContext);
 const { captain } = useContext(CaptainDataContext);
 
-useEffect(() => {
-  if (!socket) {
-      console.warn("⏳ Waiting for socket initialization...");
-      return;
-  }
+// useEffect(() => {
+//   if (!socket) {
+//       console.warn("⏳ Waiting for socket initialization...");
+//       return;
+//   }
 
-  // Emit join event after confirming socket is connected
-  socket.on("connect", () => {
-      console.log(`📡 Emitting join event for captain ID: ${captain?._id || storedCaptainId}`);
-      socket.emit('join', {
-          userId: captain?._id || storedCaptainId, 
-          userType: 'captain'
-      }, (ack) => {
-          if (ack && ack.error) {
-              console.error('Join error:', ack.error);
-          } else {
-              console.log('✅ Join successful');
-          }
-      });
-  });
+//   // Emit join event after confirming socket is connected
+//   socket.on("connect", () => {
+//       console.log(`📡 Emitting join event for captain ID: ${captain?._id || storedCaptainId}`);
+//       socket.emit('join', {
+//           userId: captain?._id || storedCaptainId, 
+//           userType: 'captain'
+//       }, (ack) => {
+//           if (ack && ack.error) {
+//               console.error('Join error:', ack.error);
+//           } else {
+//               console.log('✅ Join successful');
+//           }
+//       });
+//   });
 
-  return () => {
-      socket.off("connect"); // Clean up the event listener
-  };
+//   return () => {
+//       socket.off("connect"); // Clean up the event listener
+//   };
 
-}, [socket, captain]);
+// }, [socket, captain]);
+
+ useEffect(() => {
+
+    if (!captain) return
+    console.log(captain)
+
+    socket.emit("join", { userType: 'captain', userId: captain.id })
+  }, [captain])
 
 
   useGSAP(function () {
@@ -60,6 +68,7 @@ useEffect(() => {
     }
   }, [ridePopupPanel])
 
+  
 
   useGSAP(function () {
     if (ConfirmRidePopupPanel) {
