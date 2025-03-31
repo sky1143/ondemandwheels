@@ -144,14 +144,26 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
     }
 };
 
-module.exports.getCaptainLocation = async (ltd, lng, radius)  => {
 
-    const captains = await captainModel.find( {
-        location : {
-            $geoWithin: {
-                $centerSphere : [ [ lat, lng ] , radius/ 3963.2]
-            }
-        }
-    })
-}
+
+module.exports.getCaptainLocation = async (lat, lng, radius) => {
+
+    //raduius in km
+    try {
+        const captains = await captainModel.findAll({
+            where: literal(`
+                ST_DWithin(
+                    location, 
+                    ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), 
+                    ${radius}
+                )
+            `)
+        });
+
+        return captains;
+    } catch (error) {
+        console.error("Error fetching nearby captains:", error);
+        return [];
+    }
+};
 

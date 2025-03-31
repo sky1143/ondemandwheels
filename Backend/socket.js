@@ -1,3 +1,4 @@
+const { Sequelize} = require('./db/db')
 const socketIo = require('socket.io');
 const userModel = require('./models/user.model');
 const captainModel = require('./models/captain.model');
@@ -67,8 +68,70 @@ function initializeSocket(server) {
                 console.error('❌ Error updating socket ID:', error);
             }
         });
-
-       
+        socket.on("update-location-captain", async (data) => {
+            const { userId, location } = data;
+        
+            console.log(`Received location update for Captain ID: ${userId}`);
+            console.log(`Location data:`, location);
+        
+            if (!location || !location.ltd || !location.lng) {
+                return socket.emit("error", { message: "Invalid location" });
+            }
+        
+            try {
+                // Fetch the current location from DB
+                const captain = await captainModel.findByPk(userId);
+        
+                if (!captain) {
+                    console.log(`🚫 Captain with ID ${userId} not found`);
+                    return;
+                }
+        
+                // Convert geometry to readable lat/lng
+                const currentLocation = captain.location;
+                if (currentLocation) {
+                    const currentPoint = currentLocation.toString(); // Convert to string
+                    const regex = /POINT\(([^ ]+) ([^ ]+)\)/;
+                    const match = currentPoint.match(regex);
+        
+                    if (match) {
+                        const currentLng = parseFloat(match[1]);
+                        const currentLtd = parseFloat(match[2]);
+        
+                        // Calculate distance between old and new location
+                        const distance = Math.sqrt(
+                            Math.pow(currentLng - location.lng, 2) +
+                            Math.pow(currentLtd - location.ltd, 2)
+                        );
+        
+                        // If movement is small, ignore update
+                        if (distance < 0.0001) {
+                            console.log(`🚫 Movement too small, skipping update for Captain ID: ${userId}`);
+                            return;
+                        }
+                    }
+                }
+        
+                // Update location
+                await captainModel.update(
+                    {
+                        location: Sequelize.fn(
+                            "ST_GeomFromText",
+                            `POINT(${location.lng} ${location.ltd})`,
+                            4326
+                        ),
+                    },
+                    { where: { id: userId } }
+                );
+        
+                console.log(`✅ Location updated for Captain ID: ${userId}`);
+            } catch (error) {
+                console.error("❌ Error updating location:", error);
+                socket.emit("error", { message: "Failed to update location" });
+            }
+        });
+        
+        
 
         // Handling Client Disconnection
         socket.on('disconnect', async () => {
@@ -89,6 +152,7 @@ function initializeSocket(server) {
         });
     });
 }
+
 
 
 

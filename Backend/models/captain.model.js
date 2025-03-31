@@ -73,12 +73,8 @@ const Captain = sequelize.define('Captain', {
         type: DataTypes.ENUM('car', 'motorcycle', 'auto'),
         allowNull: true
     },
-    lat: {
-        type: DataTypes.FLOAT,
-        allowNull: true
-    },
-    lng: {
-        type: DataTypes.FLOAT,
+    location: {
+        type: DataTypes.GEOMETRY('POINT'),
         allowNull: true
     }
 }, {
@@ -97,6 +93,7 @@ Captain.prototype.hashedPassword = async function (password) {
     return bcrypt.hash(password, salt);
 
 };
+
 
 // Generate JWT Token Method
 Captain.prototype.generateAuthToken = function () {
