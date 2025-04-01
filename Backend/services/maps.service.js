@@ -1,5 +1,7 @@
 const axios = require('axios');
-const captainModel = require('../models/captain.model')
+const captainModel = require('../models/captain.model');
+
+const { literal } = require("sequelize")
 module.exports.getAddressCordinate = async (address) => {
    
     if (!address || typeof address !== "string" || /^https?:\/\//.test(address)) {
@@ -145,19 +147,26 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
 };
 
 
-
 module.exports.getCaptainLocation = async (lat, lng, radius) => {
-
-    //raduius in km
     try {
         const captains = await captainModel.findAll({
+            attributes: [
+                "*", // Select all captain data
+                [literal(`
+                    ST_DistanceSphere(
+                        location,
+                        ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
+                    ) / 1000
+                `), "distance_km"] // Convert meters to kilometers
+            ],
             where: literal(`
                 ST_DWithin(
                     location, 
                     ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), 
-                    ${radius}
+                    ${radius} * 1000
                 )
-            `)
+            `),
+            order: literal("distance_km ASC") // Sort by nearest first
         });
 
         return captains;

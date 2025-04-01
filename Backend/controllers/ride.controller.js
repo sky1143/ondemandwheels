@@ -1,5 +1,6 @@
 const rideService = require('../services/ride.service');
 const { validationResult } = require('express-validator');
+const  mapService  = require('../services/maps.service')
 
 module.exports.createRide = async (req, res, next) => {
     console.log("🚀 REQ.USER:", req.user);  // 👈 Debugging log
@@ -8,7 +9,7 @@ module.exports.createRide = async (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { pickup, destination, vehicleType } = req.body;
+    const {  pickup, destination, vehicleType } = req.body;
 
     if (!req.user || !req.user.id) {
         return res.status(401).json({ message: 'Unauthorized user' });
@@ -21,7 +22,10 @@ module.exports.createRide = async (req, res, next) => {
             destination,
             vehicleType });
 
+
         return res.status(201).json(ride);
+
+        const captainInRadius = await mapService.getCaptainLocation()
 
     } catch (error) {
         return res.status(500).json({ message: error.message });
