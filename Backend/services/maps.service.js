@@ -19,7 +19,7 @@ module.exports.getAddressCordinate = async (address) => {
         console.log(`Requesting Nominatim API for address: ${address}`);
 
         const response = await axios.get(url.toString());
-        console.log("Nominatim API Response:", response.data);
+        // console.log("Nominatim API Response:", response.data);
 
         if (response.data.length > 0) {
             const location = response.data[0];
@@ -78,7 +78,7 @@ module.exports.getDistanceTime = async (origin, destination) => {
 
         console.log(`Requesting OpenRouteService for distance and time between ${origin} and ${destination}`);
         const response = await axios.get(url);
-        console.log("OpenRouteService Response:", response.data);
+        // console.log("OpenRouteService Response:", response.data);
 
         if (response.data.features && response.data.features.length > 0) {
             const route = response.data.features[0].properties.segments[0];
@@ -147,17 +147,53 @@ module.exports.getAutoCompleteSuggestion = async (input) => {
 };
 
 
+// module.exports.getCaptainLocation = async (lat, lng, radius) => {
+//     try {
+//         const captains = await captainModel.findAll({
+//             attributes: [
+//                 "*", // Select all captain data
+//                 [literal(`
+//                     ST_DistanceSphere(
+//                         location,
+//                         ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
+//                     ) / 1000
+//                 `), "distance_km"] // Convert meters to kilometers
+//             ],
+//             where: literal(`
+//                 ST_DWithin(
+//                     location, 
+//                     ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326), 
+//                     ${radius} * 1000
+//                 )
+//             `),
+//             order: literal("distance_km ASC") // Sort by nearest first
+//         });
+
+//         return captains;
+//     } catch (error) {
+//         console.error("Error fetching nearby captains:", error);
+//         return [];
+//     }
+// };
+
 module.exports.getCaptainLocation = async (lat, lng, radius) => {
     try {
         const captains = await captainModel.findAll({
             attributes: [
-                "*", // Select all captain data
+                "id",
+                "firstname",
+                "lastname",
+                "email",
+                "vehicleColor",
+                "vehiclePlate",
+                "vehicleCapacity",
+                "vehicleType",
                 [literal(`
                     ST_DistanceSphere(
                         location,
                         ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)
                     ) / 1000
-                `), "distance_km"] // Convert meters to kilometers
+                `), "distance_km"]
             ],
             where: literal(`
                 ST_DWithin(
@@ -166,13 +202,23 @@ module.exports.getCaptainLocation = async (lat, lng, radius) => {
                     ${radius} * 1000
                 )
             `),
-            order: literal("distance_km ASC") // Sort by nearest first
+            order: literal("distance_km ASC"),
+            raw: true // So it returns plain objects instead of Sequelize instances
         });
 
-        return captains;
+        // Format captains into user-friendly objects
+        return captains.map(captain => ({
+            id: captain.id,
+            fullname: `${captain.firstname} ${captain.lastname || ''}`.trim(),
+            email: captain.email,
+            vehicleType: captain.vehicleType,
+            vehiclePlate: captain.vehiclePlate,
+            vehicleColor: captain.vehicleColor,
+            vehicleCapacity: captain.vehicleCapacity,
+            distance_km: Number(parseFloat(captain.distance_km).toFixed(2))
+        }));
     } catch (error) {
         console.error("Error fetching nearby captains:", error);
         return [];
     }
 };
-

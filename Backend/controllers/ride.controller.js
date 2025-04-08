@@ -3,7 +3,7 @@ const { validationResult } = require('express-validator');
 const mapService = require('../services/maps.service')
 
 module.exports.createRide = async (req, res, next) => {
-    console.log("🚀 REQ.USER:", req.user);  // 👈 Debugging log
+    // console.log("🚀 REQ.USER:", req.user);  // 👈 Debugging log
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -24,15 +24,16 @@ module.exports.createRide = async (req, res, next) => {
         });
 
         const pickupCoordinates = await mapService.getAddressCordinate(pickup);
-        console.log(pickupCoordinates);
+        console.log("Pickup Coordinates",pickupCoordinates);
         
-        return res.status(201).json(ride);
         const captainInRadius = await mapService.getCaptainLocation(pickupCoordinates.lat, pickupCoordinates.lng, 2)
+        console.log("Captain Radius",captainInRadius)
         
-        console.log(captainInRadius)
         
-
-
+        res.status(201).json({
+            ride,
+            nearbyCaptains: captainInRadius
+        });
 
     } catch (error) {
         return res.status(500).json({ message: error.message });
